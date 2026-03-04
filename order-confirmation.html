@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .confirmation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .hide-on-print {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-print {
+            padding: 10px 20px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-print {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background-color: #eafbf0;
+            color: #1a7f37;
+            border: 2px solid #1a7f37;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(26, 127, 55, 0.1);
+        }
+
+        .thank-you {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: var(--font-serif);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+            border-top: 2px dashed #eee;
+            border-bottom: 2px dashed #eee;
+            padding: 30px 0;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .data-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .data-value {
+            font-size: 1.05rem;
+            color: #222;
+            font-weight: 500;
+        }
+
+        .address-box {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .qr-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .qr-text {
+            max-width: 60%;
+        }
+
+        .warranty-banner {
+            background-color: #fff9e6;
+            color: #b45309;
+            border: 1px dashed #fbbf24;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .payment-status-badge {
+            color: #1a7f37;
+            font-weight: 700;
+            border: 1px solid #1a7f37;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            .confirmation-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .hide-on-print {
+                display: none !important;
+            }
+
+            .grid-container {
+                border-top: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .warranty-banner {
+                border: 1px solid #ccc;
+                background-color: transparent;
+                color: #000;
+            }
+
+            /* Styling for thermal printers if adjusting paper sizes */
+            @page {
+                margin: 0.5cm;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .qr-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .qr-text {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="confirmation-container" id="invoiceArea" style="margin-top: 60px;">
+
+        <div class="header-section">
+            <div class="logo-print">DIVINE COLLECTION</div>
+            <div class="success-badge">Order Confirmed</div>
+            <div class="thank-you">Thank you for shopping with Divine Collection</div>
+        </div>
+
+        <div class="grid-container">
+            <!-- Left Column -->
+            <div class="info-block">
+                <div class="data-row">
+                    <span class="data-label">Order ID</span>
+                    <span class="data-value" style="font-size: 1.2rem; font-weight: 700;"
+                        id="valOrderId">Loading...</span>
+                </div>
+
+                <div class="address-box">
+                    <span class="data-label">Billing & Shipping Address</span>
+                    <div class="data-value" id="valCustomer" style="margin-top: 5px;"></div>
+                    <div class="data-value" id="valPhone" style="font-size: 0.95rem; margin-top: 3px;"></div>
+                    <div class="data-value" id="valAddress" style="font-size: 0.95rem; margin-top: 3px; color: #555;">
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <span class="data-label">Order Date</span>
+                    <span class="data-value" id="valOrderDate">...</span>
+                </div>
+
+                <div class="data-row">
+                    <span class="data-label">Estimated Delivery Date</span>
+                    <span class="data-value" id="valDeliveryDate"
+                        style="color: var(--primary-color); font-weight: 600;">...</span>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="info-block">
+                <div class="data-row">
+                    <span class="data-label">Payment Status</span>
+                    <div class="data-value">
+                        PAID <span class="payment-status-badge">✓ Verified</span>
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <span class="data-label">Payment Method</span>
+                    <span class="data-value" id="valPaymentMethod">...</span>
+                </div>
+
+                <div class="data-row">
+                    <span class="data-label">Product Details</span>
+                    <span class="data-value" id="valProductTitle">...</span>
+                    <span class="data-value" style="font-size: 0.9rem; color: #666;" id="valProductQty">...</span>
+                </div>
+
+                <div class="data-row" style="background: #f9f9f9; padding: 10px; border-radius: 4px; margin-top: auto;">
+                    <span class="data-label">Total Amount Paid</span>
+                    <span class="data-value" style="font-size: 1.5rem; font-weight: 700;" id="valTotalAmount">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-text">
+                <h3 style="margin: 0 0 5px 0; font-family: var(--font-serif);">Track Your Package Live</h3>
+                <p style="margin: 0; color: #666; font-size: 0.95rem; line-height: 1.5;">Scan this QR code with your
+                    mobile device to instantly view the real-time shipping status and tracking updates for this order.
+                </p>
+            </div>
+            <div id="qrcode" style="padding: 10px; background: #fff; border: 1px solid #eee; border-radius: 4px;"></div>
+        </div>
+
+        <div class="warranty-banner">
+            🛡️ 6 Months Charger Warranty (from purchase date)
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="my-orders.html" class="btn btn-primary"
+                style="display: inline-block; width: auto; font-size: 1rem; padding: 12px 30px;">View My Orders</a>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            const phoneCheck = urlParams.get('phone');
+
+            if (!orderId) {
+                alert('No Order ID found in URL.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/orders/track/' + orderId);
+                const data = await res.json();
+
+                if (data.success && data.order) {
+                    const o = data.order;
+
+                    document.title = `Invoice ${o.orderId} - Divine Frames`;
+
+                    document.getElementById('valOrderId').innerText = '#' + o.orderId;
+                    document.getElementById('valCustomer').innerText = o.customerName;
+                    document.getElementById('valPhone').innerText = o.phone || phoneCheck || 'N/A';
+                    document.getElementById('valAddress').innerText = o.address || 'Standard Shipping Address';
+
+                    let itemTitle = 'Divine Frame';
+                    let itemQty = 1;
+                    if (o.items && o.items.length) {
+                        itemTitle = o.items.map(i => i.title).join(', ');
+                        itemQty = o.items.reduce((acc, i) => acc + (i.quantity || 1), 0);
+                    }
+
+                    document.getElementById('valProductTitle').innerText = itemTitle;
+                    document.getElementById('valProductQty').innerText = `Quantity: ${itemQty}`;
+
+                    document.getElementById('valPaymentMethod').innerText = o.paymentMethod || 'Online Transfer';
+                    document.getElementById('valTotalAmount').innerText = '₹' + o.amount.toLocaleString('en-IN');
+
+                    const cd = new Date(o.createdAt);
+                    document.getElementById('valOrderDate').innerText = cd.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                    const ed = new Date(o.createdAt);
+                    ed.setDate(ed.getDate() + 5);
+                    document.getElementById('valDeliveryDate').innerText = ed.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                    // Generate QR Code dynamically pointing to the Tracking Page
+                    const trackUrl = window.location.protocol + "//" + window.location.host + "/track-order.html";
+                    // Pass parameters conceptually (the tracker requires manual input, but QR holds the link)
+                    new QRCode(document.getElementById("qrcode"), {
+                        text: trackUrl,
+                        width: 100,
+                        height: 100,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.L
+                    });
+
+                } else {
+                    document.getElementById('invoiceArea').innerHTML = '<div style="text-align:center; padding: 50px;"><h2>Order not found</h2><p>The requested order invoice could not be located.</p></div>';
+                }
+            } catch (err) {
+                console.error("Error fetching order for invoice:", err);
+            }
+        });
+    </script>
+</body>
+
+</html>

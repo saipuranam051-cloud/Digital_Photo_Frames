@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Login - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: calc(100vh - 80px);
+            /* minus navbar height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            padding: var(--sp-xl) var(--sp-lg);
+        }
+
+        .auth-box {
+            background: #fff;
+            padding: var(--sp-xl);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .auth-box h1 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            margin-bottom: var(--sp-md);
+        }
+
+        .auth-box p {
+            color: var(--text-muted);
+            margin-bottom: var(--sp-lg);
+            font-size: 0.9rem;
+        }
+
+        .form-group-full {
+            margin-bottom: var(--sp-md);
+            text-align: left;
+        }
+
+        .form-group-full label {
+            display: block;
+            margin-bottom: var(--sp-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-group-full input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group-full input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .auth-btn {
+            width: 100%;
+            margin-top: var(--sp-md);
+            padding: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">← Back to Store</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-link" style="color: var(--primary-color);">Owner Portal</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>Owner Portal</h1>
+            <p>Authorized personnel only. Please sign in to access the owner dashboard.</p>
+            <form id="ownerLoginForm" onsubmit="event.preventDefault(); verifyOwner();">
+                <div class="form-group-full">
+                    <label for="username">Owner Email</label>
+                    <input type="email" id="username" name="username" required placeholder="Enter owner email">
+                </div>
+                <div class="form-group-full">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary auth-btn">Access Dashboard</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function verifyOwner() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Simple mock auth for the owner portal frontend
+            if (user === 'saipuranam830@gmail.com' && pass === '12345678') {
+                window.location.href = 'owner-dashboard.html';
+            } else {
+                alert('Invalid owner credentials!');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart – Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f7f7f7;
+            font-family: 'Roboto', sans-serif;
+            color: #1a1a1a;
+        }
+
+        /* ── Navbar ── */
+        .cart-nav {
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 0 32px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .cart-nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .cart-nav-back {
+            font-size: 0.85rem;
+            color: #555;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.15s;
+        }
+
+        .cart-nav-back:hover {
+            color: #1a1a1a;
+        }
+
+        /* ── Page wrapper ── */
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+
+        /* ── Heading ── */
+        .cart-heading {
+            font-size: 1.65rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .cart-heading span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #888;
+        }
+
+        /* ── Two-column layout ── */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* ══════════════════════════════
+           LEFT COLUMN
+        ══════════════════════════════ */
+        .cart-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Pincode bar */
+        .pincode-bar {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px 8px 0 0;
+            padding: 13px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: none;
+        }
+
+        .pincode-label {
+            font-size: 0.78rem;
+            color: #888;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .pincode-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .pincode-change {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+            border-bottom: 1.5px solid #1a1a1a;
+            padding-bottom: 1px;
+        }
+
+        /* ── Cart item card ── */
+        .cart-items-wrap {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+        }
+
+        .cart-item {
+            padding: 20px 20px 16px;
+            display: flex;
+            gap: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            transition: background 0.15s;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item:hover {
+            background: #fafafa;
+        }
+
+        /* Thumbnail */
+        .item-thumb {
+            width: 110px;
+            height: 110px;
+            flex-shrink: 0;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        /* Item info */
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 0.93rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+            padding-right: 60px;
+            /* space for icons */
+        }
+
+        .item-sub {
+            font-size: 0.78rem;
+            color: #00897B;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .item-variant {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 14px;
+        }
+
+        .item-variant strong {
+            color: #1a1a1a;
+        }
+
+        /* Price row */
+        .item-price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .item-price-now {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .item-price-mrp {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-decoration: line-through;
+        }
+
+        .item-discount-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #e65100;
+            background: #fff3e0;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        /* Quantity stepper */
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .qty-label-small {
+            font-size: 0.78rem;
+            color: #555;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            width: fit-content;
+        }
+
+        .qty-btn {
+            width: 34px;
+            height: 34px;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1.15rem;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            transition: background 0.15s;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .qty-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .qty-btn:disabled {
+            color: #ccc;
+            cursor: default;
+        }
+
+        .qty-num {
+            width: 38px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-left: 1.5px solid #ddd;
+            border-right: 1.5px solid #ddd;
+            background: #fff;
+            font-family: inherit;
+        }
+
+        /* Top-right icons (wishlist + remove) */
+        .item-icons {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .item-icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .item-icon-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .item-icon-btn.remove:hover {
+            color: #d32f2f;
+            background: #ffebee;
+        }
+
+        /* Delivery date info */
+        .delivery-info {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 11px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delivery-info svg {
+            flex-shrink: 0;
+            color: #888;
+        }
+
+        .delivery-text {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .delivery-text strong {
+            color: #1a1a1a;
+        }
+
+        /* ── Coupon & Offers ── */
+        .offers-section {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            margin-top: 0;
+            overflow: hidden;
+        }
+
+        .offer-row {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .offer-row:last-child {
+            border-bottom: none;
+        }
+
+        .offer-row:hover {
+            background: #fafafa;
+        }
+
+        .offer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .offer-icon {
+            color: #555;
+            flex-shrink: 0;
+        }
+
+        .offer-label {
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .offer-chevron {
+            color: #aaa;
+        }
+
+        /* ══════════════════════════════
+           RIGHT COLUMN – Cart Summary
+        ══════════════════════════════ */
+        .cart-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: sticky;
+            top: 78px;
+        }
+
+        .cart-summary {
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 24px 22px;
+            color: #fff;
+        }
+
+        .summary-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .summary-row-label {
+            font-size: 0.82rem;
+            color: #bbb;
+        }
+
+        .summary-row-val {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .summary-row-val.free {
+            color: #66BB6A;
+            font-weight: 700;
+        }
+
+        .summary-row-val.discount-val {
+            color: #42A5F5;
+        }
+
+        .summary-row-val.mrp-val {
+            color: #aaa;
+            font-weight: 400;
+        }
+
+        .summary-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            margin: 14px 0;
+        }
+
+        .summary-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-total-label {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .summary-total-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* Checkout button */
+        .checkout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .checkout-btn:hover {
+            background: #c62828;
+            transform: translateY(-1px);
+        }
+
+        .checkout-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Savings banner */
+        .savings-banner {
+            margin-top: 14px;
+            background: rgba(102, 187, 106, 0.15);
+            border: 1px solid rgba(102, 187, 106, 0.30);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            color: #66BB6A;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* ══════════════════════════════
+           PAYMENT MODAL
+        ══════════════════════════════ */
+        #payModal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.50);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.30s ease;
+        }
+
+        #payModal.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .pay-sheet {
+            background: #fff;
+            width: 100%;
+            max-width: 520px;
+            border-radius: 18px 18px 0 0;
+            padding: 0 0 32px;
+            transform: translateY(100%);
+            transition: transform 0.38s cubic-bezier(0.34, 1.2, 0.64, 1);
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        #payModal.open .pay-sheet {
+            transform: translateY(0);
+        }
+
+        .pay-handle {
+            width: 40px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        .pay-header {
+            padding: 18px 24px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 0;
+        }
+
+        .pay-header h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pay-header p {
+            font-size: 0.78rem;
+            color: #888;
+            margin-bottom: 14px;
+        }
+
+        /* Steps */
+        .pay-steps {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .pay-step-btn {
+            flex: 1;
+            padding: 12px 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #aaa;
+            border-bottom: 2.5px solid transparent;
+            font-family: 'Roboto', sans-serif;
+            transition: color 0.18s, border-color 0.18s;
+        }
+
+        .pay-step-btn.active {
+            color: #1a1a1a;
+            border-bottom-color: #1a1a1a;
+        }
+
+        .pay-body {
+            padding: 20px 24px 0;
+        }
+
+        /* Panels */
+        .pay-panel {
+            display: none;
+        }
+
+        .pay-panel.active {
+            display: block;
+        }
+
+        /* Address form */
+        .pay-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .pay-form-full {
+            margin-bottom: 12px;
+        }
+
+        .pay-input {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 7px;
+            font-size: 0.86rem;
+            font-family: 'Roboto', sans-serif;
+            outline: none;
+            transition: border-color 0.18s;
+            background: #fafafa;
+        }
+
+        .pay-input:focus {
+            border-color: #1a1a1a;
+            background: #fff;
+        }
+
+        .pay-input-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Payment method tabs */
+        .pay-method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pay-method {
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s;
+        }
+
+        .pay-method:hover {
+            border-color: #bbb;
+        }
+
+        .pay-method.selected {
+            border-color: #1a1a1a;
+            background: #fafafa;
+        }
+
+        .pay-method input[type=radio] {
+            accent-color: #1a1a1a;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .pay-method-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .pay-method-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .pay-method-sub {
+            font-size: 0.74rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* UPI input */
+        .upi-input-wrap {
+            margin-top: 12px;
+            display: none;
+        }
+
+        .upi-input-wrap.show {
+            display: block;
+        }
+
+        /* Order summary in modal */
+        .pay-summary {
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+        }
+
+        .pay-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            margin-bottom: 6px;
+        }
+
+        .pay-summary-row:last-child {
+            margin-bottom: 0;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .pay-summary-row span:last-child {
+            font-weight: 700;
+        }
+
+        /* Place order button */
+        .pay-place-btn {
+            width: 100%;
+            padding: 15px;
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0.3px;
+            transition: background 0.2s, transform 0.15s;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pay-place-btn:hover {
+            background: #c62828;
+            transform: translateY(-1px);
+        }
+
+        .pay-place-btn:active {
+            transform: translateY(0);
+        }
+
+        .pay-place-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Processing overlay */
+        #payProcessing {
+            position: absolute;
+            inset: 0;
+            background: #fff;
+            border-radius: 18px 18px 0 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        #payProcessing.show {
+            display: flex;
+        }
+
+        .pay-spin {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #f0f0f0;
+            border-top-color: #e53935;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pay-process-title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .pay-process-sub {
+            font-size: 0.82rem;
+            color: #888;
+        }
+
+        /* next/back nav */
+        .pay-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .pay-next-btn {
+            flex: 1;
+            padding: 13px;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            transition: background 0.18s;
+        }
+
+        .pay-next-btn:hover {
+            background: #333;
+        }
+
+        .pay-back-btn {
+            padding: 13px 18px;
+            border: 1.5px solid #ddd;
+            border-radius: 7px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-family: 'Roboto', sans-serif;
+            color: #555;
+            transition: border-color 0.18s;
+        }
+
+        .pay-back-btn:hover {
+            border-color: #aaa;
+        }
+
+        /* ── Empty cart state ── */
+        .empty-cart {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 60px 32px;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 14px;
+        }
+
+        .empty-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-sub {
+            font-size: 0.88rem;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .empty-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: #1a1a1a;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.18s;
+        }
+
+        .empty-btn:hover {
+            background: #333;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 820px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .item-name {
+                padding-right: 48px;
+                font-size: 0.87rem;
+            }
+
+            .item-thumb {
+                width: 86px;
+                height: 86px;
+            }
+
+            .page {
+                padding: 20px 12px 40px;
+            }
+
+            .cart-heading {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="cart-nav">
+        <a href="index.html" class="cart-nav-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Continue Shopping
+        </a>
+        <a href="index.html" class="cart-nav-logo">DIVINE.</a>
+        <a href="login.html" id="authLink" style="font-size:0.82rem;color:#555;text-decoration:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+        </a>
+    </nav>
+
+    <div class="page">
+        <h1 class="cart-heading">My Cart <span id="cartCountLabel">0 products</span></h1>
+
+        <div class="cart-layout" id="cartLayout">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+
+        function renderCart() {
+            const items = DivineCart.getCart();
+            const layout = document.getElementById('cartLayout');
+            layout.innerHTML = '';
+
+            // Update heading count
+            const totalQty = items.reduce((s, i) => s + i.qty, 0);
+            document.getElementById('cartCountLabel').textContent =
+                totalQty + (totalQty === 1 ? ' product' : ' products');
+
+            if (items.length === 0) {
+                layout.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-icon">🛍️</div>
+                <div class="empty-title">Your cart is empty</div>
+                <div class="empty-sub">Looks like you haven't added any frames yet.</div>
+                <a href="index.html" class="empty-btn">Browse Collection</a>
+            </div>`;
+                return;
+            }
+
+            // ── LEFT: items ──
+            const left = document.createElement('div');
+            left.className = 'cart-left';
+
+            // Pincode bar
+            left.innerHTML = `
+        <div class="pincode-bar">
+            <div>
+                <div class="pincode-label">Deliver to</div>
+                <div class="pincode-val" id="pincodeVal">500001</div>
+            </div>
+            <a href="#" class="pincode-change" onclick="changePincode(event)">Check</a>
+        </div>`;
+
+            // Items wrapper
+            const itemsWrap = document.createElement('div');
+            itemsWrap.className = 'cart-items-wrap';
+
+            items.forEach((item, idx) => {
+                const mrp = item.mrp || Math.round(item.price * 1.25);
+                const discount = Math.round((mrp - item.price) / mrp * 100);
+
+                const card = document.createElement('div');
+                card.innerHTML = `
+            <div class="cart-item" id="item-${idx}">
+                <img class="item-thumb" src="${item.img || 'product_ganesha.png'}" alt="${item.title}">
+                <div class="item-info">
+                    <div class="item-name">${item.title}</div>
+                    <div class="item-sub">Premium Wooden Frame · Handcrafted</div>
+                    <div class="item-variant"><strong>Size:</strong> ${item.meta || '12×16"'}</div>
+                    <div class="item-price-row">
+                        <span class="item-price-now">${fmt(item.price * item.qty)}</span>
+                        <span class="item-price-mrp">${fmt(mrp * item.qty)}</span>
+                        ${discount > 0 ? `<span class="item-discount-badge">${discount}% Off</span>` : ''}
+                    </div>
+                    <div class="qty-row">
+                        <span class="qty-label-small">Quantity:</span>
+                        <div class="qty-stepper">
+                            <button class="qty-btn" onclick="changeQty(${idx}, -1)" ${item.qty <= 1 ? 'disabled' : ''}>−</button>
+                            <div class="qty-num" id="qnum-${idx}">${item.qty}</div>
+                            <button class="qty-btn" onclick="changeQty(${idx}, 1)" ${item.qty >= 20 ? 'disabled' : ''}>+</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Wishlist + Remove icons -->
+                <div class="item-icons">
+                    <button class="item-icon-btn" title="Save for later"
+                        onclick="wishlistItem(${idx}, this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </button>
+                    <button class="item-icon-btn remove" title="Remove item"
+                        onclick="removeItem(${idx})">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>`;
+                itemsWrap.appendChild(card);
+            });
+
+            left.appendChild(itemsWrap);
+
+            // Delivery info
+            const delInfo = document.createElement('div');
+            delInfo.className = 'delivery-info';
+            const today = new Date();
+            today.setDate(today.getDate() + 5);
+            const deliveryDate = today.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            delInfo.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="delivery-text">The product will be delivered by <strong>${deliveryDate}</strong></span>`;
+            left.appendChild(delInfo);
+
+            layout.appendChild(left);
+
+            // ── RIGHT: Summary ──
+            const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const totalMrp = items.reduce((s, i) => s + (i.mrp || Math.round(i.price * 1.25)) * i.qty, 0);
+            const saved = totalMrp - subtotal;
+
+            const right = document.createElement('div');
+            right.className = 'cart-right';
+
+            // ── Coupon & Offers above summary ──
+            const rightOffers = document.createElement('div');
+            rightOffers.className = 'offers-section';
+            rightOffers.innerHTML = `
+            <div class="offer-row" onclick="applyCoupon()">
+                <div class="offer-left">
+                    <svg class="offer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    <span class="offer-label">Apply Coupon</span>
+                </div>
+                <svg class="offer-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </div>
+            <div class="offer-row" onclick="showBankOffers()">
+                <div class="offer-left">
+                    <svg class="offer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                    </svg>
+                    <span class="offer-label">Check all bank offers</span>
+                </div>
+                <svg class="offer-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </div>`;
+            right.appendChild(rightOffers);
+
+            // ── Cart Summary ──
+            const summaryDiv = document.createElement('div');
+            summaryDiv.innerHTML = `
+        <div class="cart-summary">
+            <div class="summary-title">Cart Summary</div>
+
+            <div class="summary-row">
+                <span class="summary-row-label">Total MRP</span>
+                <span class="summary-row-val mrp-val">${fmt(totalMrp)}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-row-label">Discounted Total</span>
+                <span class="summary-row-val">${fmt(subtotal)}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-row-label">Product discount</span>
+                <span class="summary-row-val discount-val">-${fmt(saved)}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-row-label">Delivery charge</span>
+                <span class="summary-row-val free">Free</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-row-label" style="display:flex;align-items:center;gap:5px;">
+                    Installation Charge
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </span>
+                <span class="summary-row-val free">Free</span>
+            </div>
+
+            <hr class="summary-divider">
+
+            <div class="summary-total-row">
+                <span class="summary-total-label">Total Payable</span>
+                <span class="summary-total-val">${fmt(subtotal)}</span>
+            </div>
+
+            <button onclick="openPayment()" class="checkout-btn">
+                Proceed to Checkout
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </button>
+
+            ${saved > 0 ? `
+            <div class="savings-banner">
+                🎉 Congratulations! You've just saved ${fmt(saved)} on your order.
+            </div>` : ''}
+        </div>`;
+            right.appendChild(summaryDiv);
+            layout.appendChild(right);
+        }
+
+        function changeQty(idx, delta) {
+            const cart = DivineCart.getCart();
+            const newQty = Math.min(20, Math.max(1, cart[idx].qty + delta));
+            DivineCart.updateQty(idx, newQty);
+            renderCart();
+        }
+
+        function removeItem(idx) {
+            const card = document.getElementById('item-' + idx);
+            if (card) {
+                card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(20px)';
+                setTimeout(() => { DivineCart.removeItem(idx); renderCart(); }, 240);
+            } else {
+                DivineCart.removeItem(idx);
+                renderCart();
+            }
+        }
+
+        function wishlistItem(idx, btn) {
+            btn.style.color = '#e53935';
+            btn.querySelector('svg').style.fill = '#e53935';
+            btn.style.transform = 'scale(1.3)';
+            setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
+        }
+
+        function applyCoupon() {
+            const code = prompt('Enter coupon code:');
+            if (code && code.toUpperCase() === 'DIVINE10') {
+                alert('🎉 Coupon DIVINE10 applied! 10% off your order.');
+            } else if (code) {
+                alert('Invalid coupon code. Try DIVINE10!');
+            }
+        }
+
+        function showBankOffers() {
+            alert('🏦 Bank Offers:\n\n• HDFC Bank: 10% off up to ₹500 on credit cards\n• SBI: 5% cashback on debit cards\n• ICICI: ₹200 off on orders above ₹1500\n• Axis Bank: 15% off using Axis credit card');
+        }
+
+        function changePincode(e) {
+            e.preventDefault();
+            const pin = prompt('Enter your PIN code:');
+            if (pin && pin.length === 6 && /^\d+$/.test(pin)) {
+                document.getElementById('pincodeVal').textContent = pin;
+            }
+        }
+
+        /* ══════════════════════════════
+           PAYMENT MODAL LOGIC
+        ══════════════════════════════ */
+        let payStep = 0; // 0=address, 1=payment
+        let selectedMethod = 'COD';
+
+        function openPayment() {
+            const items = DivineCart.getCart();
+            if (!items.length) return;
+
+            // Prefill name/mobile from session
+            try {
+                const u = JSON.parse(localStorage.getItem('divineUser') || '{}');
+                if (u.name) document.getElementById('payName').value = u.name;
+                if (u.mobile) document.getElementById('payMobile').value = u.mobile;
+            } catch { }
+
+            // Populate order summary
+            const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const totalMrp = items.reduce((s, i) => s + (i.mrp || Math.round(i.price * 1.25)) * i.qty, 0);
+            const saved = totalMrp - subtotal;
+            document.getElementById('paySumMrp').textContent = fmt(totalMrp);
+            document.getElementById('paySumSave').textContent = '-' + fmt(saved);
+            document.getElementById('paySumTotal').textContent = fmt(subtotal);
+            document.getElementById('payFinalAmt').textContent = fmt(subtotal);
+
+            payStep = 0;
+            showPayStep(0);
+
+            const modal = document.getElementById('payModal');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePayment() {
+            document.getElementById('payModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function showPayStep(step) {
+            payStep = step;
+            document.querySelectorAll('.pay-step-btn').forEach((b, i) => b.classList.toggle('active', i === step));
+            document.querySelectorAll('.pay-panel').forEach((p, i) => p.classList.toggle('active', i === step));
+        }
+
+        function nextPayStep() {
+            // Validate address
+            const name = document.getElementById('payName').value.trim();
+            const mobile = document.getElementById('payMobile').value.trim();
+            const street = document.getElementById('payStreet').value.trim();
+            const city = document.getElementById('payCity').value.trim();
+            const pin = document.getElementById('payPin').value.trim();
+            if (!name || !mobile || !street || !city || !pin) {
+                shakeEl(document.querySelector('.pay-body'));
+                alert('Please fill in all address fields.');
+                return;
+            }
+            showPayStep(1);
+        }
+
+        function selectMethod(method, el) {
+            selectedMethod = method;
+            document.querySelectorAll('.pay-method').forEach(m => {
+                m.classList.remove('selected');
+                m.querySelector('input').checked = false;
+            });
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+            // Show UPI input if UPI selected
+            document.getElementById('upiInputWrap').classList.toggle('show', method === 'UPI');
+        }
+
+        async function placeOrder() {
+            const items = DivineCart.getCart();
+            if (!items.length) return;
+
+            // Show processing spinner
+            document.getElementById('payProcessing').classList.add('show');
+
+            const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const address = {
+                name: document.getElementById('payName').value.trim(),
+                mobile: document.getElementById('payMobile').value.trim(),
+                street: document.getElementById('payStreet').value.trim(),
+                city: document.getElementById('payCity').value.trim(),
+                state: document.getElementById('payState').value.trim(),
+                pin: document.getElementById('payPin').value.trim()
+            };
+
+            // Simulate payment processing (2s)
+            await new Promise(r => setTimeout(r, 2000));
+
+            // Try API, fall back to local
+            const orderId = 'DF' + Date.now().toString(36).toUpperCase();
+            const order = {
+                orderId, items, address, subtotal,
+                payment: selectedMethod,
+                status: 'Order Confirmed',
+                date: new Date().toISOString()
+            };
+
+            // Try server
+            const token = localStorage.getItem('divine_token');
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
+                    body: JSON.stringify({ items: items.map(i => ({ productId: i.id, name: i.title, price: i.price, quantity: i.qty, image: i.img })), address, paymentMethod: selectedMethod, subtotal, deliveryFee: 0, total: subtotal })
+                });
+                const data = await res.json();
+                if (data.success) order.orderId = data.order.orderId || orderId;
+            } catch { /* offline / server not available — use local orderId */ }
+
+            // Save for confirmation page
+            sessionStorage.setItem('divineLastOrder', JSON.stringify(order));
+            DivineCart.clearCart();
+            window.location.href = 'order-confirmation.html';
+        }
+
+        function shakeEl(el) {
+            el.style.animation = 'none';
+            requestAnimationFrame(() => { el.style.animation = 'shake 0.4s ease'; });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof DivineCart === 'undefined') return;
+            DivineCart.updateBadge();
+            renderCart();
+
+            // Close modal on backdrop click
+            document.getElementById('payModal').addEventListener('click', function (e) {
+                if (e.target === this) closePayment();
+            });
+        });
+
+        // Shake keyframe
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }';
+        document.head.appendChild(shakeStyle);
+    </script>
+
+    <!-- ══════════════════════════════════════
+         PAYMENT BOTTOM-SHEET MODAL
+    ══════════════════════════════════════ -->
+    <div id="payModal">
+        <div class="pay-sheet">
+            <div class="pay-handle"></div>
+            <div class="pay-header">
+                <h2>Complete Your Order</h2>
+                <p>Fill in delivery address &amp; choose a payment method</p>
+            </div>
+
+            <!-- Step tabs -->
+            <div class="pay-steps">
+                <button class="pay-step-btn active" onclick="showPayStep(0)">1 · Delivery Address</button>
+                <button class="pay-step-btn" onclick="showPayStep(1)">2 · Payment</button>
+            </div>
+
+            <div class="pay-body">
+
+                <!-- ── STEP 0: Address ── -->
+                <div class="pay-panel active">
+                    <div class="pay-form-row">
+                        <div>
+                            <label class="pay-input-label">Full Name *</label>
+                            <input id="payName" class="pay-input" placeholder="Your name">
+                        </div>
+                        <div>
+                            <label class="pay-input-label">Mobile *</label>
+                            <input id="payMobile" class="pay-input" placeholder="10-digit number" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="pay-form-full">
+                        <label class="pay-input-label">Street / Flat / Area *</label>
+                        <input id="payStreet" class="pay-input" placeholder="House No., Street, Locality">
+                    </div>
+                    <div class="pay-form-row">
+                        <div>
+                            <label class="pay-input-label">City *</label>
+                            <input id="payCity" class="pay-input" placeholder="City">
+                        </div>
+                        <div>
+                            <label class="pay-input-label">State</label>
+                            <input id="payState" class="pay-input" placeholder="State">
+                        </div>
+                    </div>
+                    <div class="pay-form-full">
+                        <label class="pay-input-label">PIN Code *</label>
+                        <input id="payPin" class="pay-input" placeholder="6-digit PIN" maxlength="6"
+                            style="max-width:160px;">
+                    </div>
+                    <div class="pay-nav">
+                        <button class="pay-back-btn" onclick="closePayment()">Cancel</button>
+                        <button class="pay-next-btn" onclick="nextPayStep()">Continue to Payment →</button>
+                    </div>
+                </div>
+
+                <!-- ── STEP 1: Payment ── -->
+                <div class="pay-panel">
+
+                    <!-- Mini order summary -->
+                    <div class="pay-summary">
+                        <div class="pay-summary-row"><span>Total MRP</span><span id="paySumMrp">₹0</span></div>
+                        <div class="pay-summary-row"><span>Savings</span><span id="paySumSave"
+                                style="color:#388e3c;">-₹0</span></div>
+                        <div class="pay-summary-row"><span>Delivery</span><span
+                                style="color:#388e3c;font-weight:700;">FREE</span></div>
+                        <div class="pay-summary-row"
+                            style="margin-top:8px;padding-top:8px;border-top:1px solid #e8e8e8;">
+                            <span>Total Payable</span><span id="paySumTotal">₹0</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment methods -->
+                    <div class="pay-method-list">
+
+                        <div class="pay-method selected" onclick="selectMethod('COD', this)">
+                            <input type="radio" name="payMethod" checked>
+                            <div class="pay-method-icon">💵</div>
+                            <div>
+                                <div class="pay-method-name">Cash on Delivery</div>
+                                <div class="pay-method-sub">Pay when your order arrives</div>
+                            </div>
+                        </div>
+
+                        <div class="pay-method" onclick="selectMethod('UPI', this)">
+                            <input type="radio" name="payMethod">
+                            <div class="pay-method-icon">📱</div>
+                            <div style="flex:1;">
+                                <div class="pay-method-name">UPI Payment</div>
+                                <div class="pay-method-sub">Google Pay · PhonePe · Paytm</div>
+                                <div class="upi-input-wrap" id="upiInputWrap">
+                                    <input class="pay-input" placeholder="Enter UPI ID (e.g. name@upi)"
+                                        style="margin-top:8px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pay-method" onclick="selectMethod('Card', this)">
+                            <input type="radio" name="payMethod">
+                            <div class="pay-method-icon">💳</div>
+                            <div>
+                                <div class="pay-method-name">Credit / Debit Card</div>
+                                <div class="pay-method-sub">Visa · Mastercard · RuPay</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="pay-nav">
+                        <button class="pay-back-btn" onclick="showPayStep(0)">← Back</button>
+                        <button class="pay-place-btn" onclick="placeOrder()" style="flex:1;">
+                            🔒 Place Order &nbsp;·&nbsp; <span id="payFinalAmt">₹0</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- /pay-body -->
+
+            <!-- Processing overlay (shows on placeOrder) -->
+            <div id="payProcessing">
+                <div class="pay-spin"></div>
+                <div class="pay-process-title">Processing your order…</div>
+                <div class="pay-process-sub">Please wait, do not close the page</div>
+            </div>
+
+        </div><!-- /pay-sheet -->
+    </div><!-- /payModal -->
+
+</body>
+
+</html>

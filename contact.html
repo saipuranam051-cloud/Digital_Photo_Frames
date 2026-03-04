@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        .page-header {
+            text-align: center;
+            padding: var(--sp-xl) 20px;
+            background-color: var(--secondary-color);
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            margin-bottom: var(--sp-sm);
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: var(--sp-xl) auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-xl);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--sp-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-lg);
+        }
+
+        .info-block h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: var(--sp-sm);
+        }
+
+        .info-block p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">Back to Store</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
+
+    <header class="page-header">
+        <h1 class="page-title">Get in Touch</h1>
+        <p class="hero-subtitle" style="color:var(--text-muted)">We're here to help you find the perfect frame.</p>
+    </header>
+
+    <div class="contact-container">
+        <form class="contact-form" action="index.html">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea required placeholder="How can we assist you today?"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit"
+                onclick="alert('Message sent successfully!'); window.location.href='index.html';">Send Message</button>
+        </form>
+
+        <div class="contact-info">
+            <div class="info-block">
+                <h3>Customer Service</h3>
+                <p>Mon - Fri: 9:00 AM - 6:00 PM IST</p>
+                <p>Email: support@divineframes.in</p>
+                <p>Phone: +91 1800 123 4567</p>
+            </div>
+
+            <div class="info-block">
+                <h3>Headquarters</h3>
+                <p>12th Floor, MG Road,</p>
+                <p>Bangalore, Karnataka 560001</p>
+                <p>India</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

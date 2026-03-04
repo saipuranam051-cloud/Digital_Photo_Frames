@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        .page-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header-title {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .order-card-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-group {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .header-value {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .order-id a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .order-id a:hover {
+            text-decoration: underline;
+        }
+
+        .order-card-body {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .product-meta {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            gap: 6px;
+        }
+
+        .status-confirmed,
+        .status-processing,
+        .status-shipped {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .status-delivered {
+            background: #eafbf0;
+            color: #1a7f37;
+        }
+
+        .status-failed,
+        .status-cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .header-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .order-card-header {
+                align-items: flex-start;
+            }
+
+            .order-card-body {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .actions {
+                width: 100%;
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">← Back to Store</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right">
+            <a href="cart.html" class="nav-icon" title="Shopping Bag">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <h1 class="header-title">My Orders</h1>
+        <div id="ordersContainer">
+            <div style="text-align: center; padding: 40px; color: #666;">
+                Loading your orders...
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: 50px;">
+        <div class="footer-bottom">
+            <p>&copy; 2026 Divine Frames. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userSession = localStorage.getItem('user');
+            if (!userSession) {
+                // Not logged in -> Redirect
+                window.location.href = 'login.html';
+                return;
+            }
+
+            let user = {};
+            try {
+                user = JSON.parse(userSession);
+            } catch (e) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const container = document.getElementById('ordersContainer');
+
+            try {
+                const res = await fetch('/api/orders/user/' + encodeURIComponent(user.email));
+                const data = await res.json();
+
+                if (data.success) {
+                    const orders = data.orders;
+
+                    if (orders.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" style="margin-bottom:15px;">
+                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                </svg>
+                                <h2>No orders yet</h2>
+                                <p style="color:#666; margin-bottom:20px;">You haven't placed any orders with us. Begin your spiritual journey today!</p>
+                                <a href="index.html" class="btn btn-primary" style="display:inline-block; width:auto;">Start Shopping</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = '';
+
+                    orders.forEach(o => {
+                        const d = new Date(o.createdAt);
+                        const dateStr = d.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                        let itemsStr = 'Divine Frame';
+                        let qtyCount = 1;
+                        if (o.items && o.items.length) {
+                            itemsStr = o.items.map(i => i.title).join(', ');
+                            qtyCount = o.items.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+                        }
+
+                        let statusClass = 'status-processing';
+                        if (o.orderStatus === 'Delivered') statusClass = 'status-delivered';
+                        else if (o.orderStatus === 'Cancelled' || o.paymentStatus === 'Failed') statusClass = 'status-failed';
+
+                        const card = document.createElement('div');
+                        card.className = 'order-card';
+                        card.innerHTML = `
+                            <div class="order-card-header">
+                                <div class="header-group">
+                                    <div class="header-item">
+                                        <span class="header-label">Order Placed</span>
+                                        <span class="header-value">${dateStr}</span>
+                                    </div>
+                                    <div class="header-item">
+                                        <span class="header-label">Total Amount</span>
+                                        <span class="header-value">₹${o.amount.toLocaleString('en-IN')}</span>
+                                    </div>
+                                    <div class="header-item">
+                                        <span class="header-label">Ship To</span>
+                                        <span class="header-value">${o.customerName}</span>
+                                    </div>
+                                </div>
+                                <div class="header-item order-id" style="text-align: right;">
+                                    <span class="header-label">Order #</span>
+                                    <span class="header-value">${o.orderId}</span>
+                                </div>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="product-info">
+                                    <!-- A placeholder graphic for the frame -->
+                                    <div style="width: 80px; height: 80px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; display:flex; align-items:center; justify-content:center;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                    </div>
+                                    <div class="product-details">
+                                        <h4>${itemsStr}</h4>
+                                        <div class="product-meta">Qty: ${qtyCount} | Payment: ${o.paymentMethod || 'Online'}</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="flex-grow: 1; text-align: center;">
+                                    <div class="status-badge ${statusClass}">
+                                        <div class="status-dot"></div>
+                                        ${o.paymentStatus === 'Failed' ? 'Payment Failed' : o.orderStatus}
+                                    </div>
+                                </div>
+
+                                <div class="actions">
+                                    <button class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9rem;" onclick="window.location.href='track-order.html?id=${o.orderId}'">
+                                        Track Package
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = `<div class="empty-state">Failed to load orders. Please refresh.</div>`;
+                }
+
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state">Error connecting to server.</div>`;
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+
+</html>

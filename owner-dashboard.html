@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--sp-xl) var(--sp-lg);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--sp-xl);
+            padding-bottom: var(--sp-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-title {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--sp-lg);
+            margin-bottom: var(--sp-xl);
+        }
+
+        .metric-card {
+            background-color: var(--secondary-color);
+            padding: var(--sp-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-sm);
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .payments-section {
+            background-color: #fff;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: var(--sp-md);
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .payments-table th,
+        .payments-table td {
+            padding: var(--sp-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .payments-table th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+            background-color: var(--secondary-color);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            background-color: #e2f5e9;
+            color: #1a7f37;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .action-link {
+            color: var(--primary-color);
+            text-decoration: underline;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* ── Inline Orders Search Bar ── */
+        .orders-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: var(--sp-md);
+            flex-wrap: wrap;
+        }
+
+        .orders-search-wrap {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid var(--border-color);
+            border-radius: 100px;
+            overflow: hidden;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            flex: 1;
+            max-width: 420px;
+        }
+
+        .orders-search-wrap:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+        }
+
+        .orders-search-icon {
+            padding: 0 12px 0 16px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .orders-search-input {
+            border: none;
+            outline: none;
+            padding: 11px 0;
+            font-family: inherit;
+            font-size: 0.9rem;
+            flex: 1;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        .orders-search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .orders-search-clear {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0 14px;
+            font-size: 1rem;
+            line-height: 1;
+            display: none;
+        }
+
+        .orders-search-clear.visible {
+            display: block;
+        }
+
+        .orders-count-badge {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .no-results-row td {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 24px;
+        }
+
+
+
+        @media (max-width: 768px) {
+
+            .payments-table,
+            .payments-table tbody,
+            .payments-table tr,
+            .payments-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .payments-table tr {
+                margin-bottom: var(--sp-md);
+                border: 1px solid var(--border-color);
+            }
+
+            .payments-table th {
+                display: none;
+            }
+
+            .payments-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .payments-table td::before {
+                content: attr(data-label);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                font-weight: 600;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">← Back to Store</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-link" style="color: var(--primary-color);">Owner Portal</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Owner Dashboard</h1>
+            <div style="display: flex; gap: 10px;">
+                <a href="admin-products.html" class="btn btn-primary"
+                    style="text-decoration: none; display: flex; align-items: center;">Manage Products</a>
+                <button class="btn btn-outline" onclick="window.print()">Export Report</button>
+            </div>
+        </div>
+
+
+        <!-- Metric Cards -->
+        <h2 class="section-title" style="font-size:1.5rem; margin-top:20px;">Sales Performance</h2>
+        <div class="dashboard-metrics" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="metric-card">
+                <span class="metric-title">Sales Today</span>
+                <span class="metric-value" id="valSalesToday">₹0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">Sales This Month</span>
+                <span class="metric-value" id="valSalesMonth">₹0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">Total Rev Overall</span>
+                <span class="metric-value" id="valTotalRev">₹0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">Frames Sold Today</span>
+                <span class="metric-value" id="valFramesSold">0</span>
+            </div>
+        </div>
+
+        <!-- Payment Details Table -->
+        <div class="payments-section">
+            <!-- Inline Search Toolbar -->
+            <div class="orders-toolbar">
+                <h2 class="section-title" style="margin-bottom:0;">Recent Payment Details</h2>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <span class="orders-count-badge" id="ordersCountBadge"></span>
+                    <div class="orders-search-wrap">
+                        <span class="orders-search-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </span>
+                        <input class="orders-search-input" id="ordersFilterInput" type="text"
+                            placeholder="Search orders…" oninput="filterOrdersTable()"
+                            onkeydown="if(event.key==='Escape'){this.value='';filterOrdersTable();}" />
+
+                        <!-- NEW DATE FILTER -->
+                        <span style="color:#ddd; margin: 0 8px;">|</span>
+                        <input type="date" id="ordersDateFilter" class="orders-search-input"
+                            style="flex: 0 0 auto; max-width: 130px; cursor: pointer; color: var(--text-color);"
+                            onchange="filterOrdersTable()" title="Filter by Date" />
+                        <!-- END DATE FILTER -->
+                        <button class="orders-search-clear" id="ordersSearchClear"
+                            onclick="document.getElementById('ordersFilterInput').value=''; document.getElementById('ordersDateFilter').value=''; filterOrdersTable();"
+                            title="Clear">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="payments-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date &amp; Time</th>
+                        <th>Customer / Contact</th>
+                        <th>Amount</th>
+                        <th>Status / Payment</th>
+                        <th>Tracking Order</th>
+                        <th>Evidence</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align: center;">Loading secure data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Check rudimentary auth logic
+        if (!document.referrer && window.location.protocol.startsWith('http')) {
+            // Optional: you can add a strict session check here
+        }
+
+        let hasInitializedDateFilter = false;
+
+
+        async function fetchDashboard() {
+            try {
+                const res = await fetch('/api/admin/dashboard');
+                const result = await res.json();
+
+                if (result.success) {
+                    const d = result.data;
+                    document.getElementById('valSalesToday').innerText = '₹' + d.salesToday.toLocaleString('en-IN');
+                    document.getElementById('valSalesMonth').innerText = '₹' + d.salesMonth.toLocaleString('en-IN');
+                    document.getElementById('valTotalRev').innerText = '₹' + d.totalRevenue.toLocaleString('en-IN');
+                    document.getElementById('valFramesSold').innerText = d.framesSoldToday;
+
+                    const tBody = document.getElementById('ordersTableBody');
+                    if (d.recentOrders.length === 0) {
+                        tBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No orders yet.</td></tr>';
+                    } else {
+                        tBody.innerHTML = '';
+                        d.recentOrders.forEach(o => {
+                            const purchaseDate = new Date(o.createdAt);
+                            const dateStr = purchaseDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                            const timeStr = purchaseDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+                            const tr = document.createElement('tr');
+                            // Store search-friendly text on the row for filtering
+                            const searchText = [o.orderId, o.customerName, o.phone || '', o.email || '', o.amount, o.paymentStatus, o.orderStatus, dateStr].join(' ').toLowerCase();
+                            tr.setAttribute('data-search', searchText);
+
+                            // Format date for filtering (YYYY-MM-DD local)
+                            const filterDate = purchaseDate.getFullYear() + "-" + String(purchaseDate.getMonth() + 1).padStart(2, '0') + "-" + String(purchaseDate.getDate()).padStart(2, '0');
+                            tr.setAttribute('data-date', filterDate);
+
+                            tr.innerHTML = `
+                                <td data-label="Order ID"><strong>${o.orderId}</strong></td>
+                                <td data-label="Date &amp; Time">
+                                    <div style="font-weight:600; font-size:0.88rem;">${dateStr}</div>
+                                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">⏰ ${timeStr}</div>
+                                </td>
+                                <td data-label="Customer / Contact">${o.customerName}<br><span style="color:var(--text-muted); font-size:0.8rem;">${o.phone || ''}</span></td>
+                                <td data-label="Amount">₹${o.amount.toLocaleString('en-IN')}</td>
+                                <td data-label="Status / Payment">
+                                    <span class="status-badge">${o.paymentStatus}</span><br>
+                                    <span style="font-size:0.8rem; margin-top:4px; display:inline-block;">via ${o.paymentMethod}</span><br>
+                                    <select style="margin-top: 5px; font-size: 0.8rem; padding: 2px;" onchange="updateOrderStatus('${o.orderId}', this.value)">
+                                        <option value="Order Confirmed" ${o.orderStatus === 'Order Confirmed' ? 'selected' : ''}>Order Confirmed</option>
+                                        <option value="Processing" ${o.orderStatus === 'Processing' ? 'selected' : ''}>Processing</option>
+                                        <option value="Shipped" ${o.orderStatus === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                        <option value="Out for Delivery" ${o.orderStatus === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                                        <option value="Delivered" ${o.orderStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                        <option value="Cancelled" ${o.orderStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </td>
+                                <td data-label="Tracking/Delivery">
+                                    ${o.trackingId ?
+                                    `<span style="color:#22c55e; font-weight:600;">${o.trackingId}</span>
+                                        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Agent: ${o.deliveryAgentName || 'N/A'}</div>`
+                                    :
+                                    `<button onclick="assignDeliveryAgent('${o.orderId}')" style="background:#4f46e5;color:white;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:0.8rem;">Assign Agent</button>`
+                                }
+                                </td>
+                                <td data-label="Evidence">
+                                    <span class="action-link" style="display:block; margin-bottom:8px;" onclick="window.open('owner-invoice.html?id=${o.orderId}', '_blank')">🖨️ Print Invoice</span>
+                                    <span class="action-link" onclick="alert('Viewing secure payment gateway verification for ${o.orderId}...')">👁 Verify</span>
+                                </td>
+                            `;
+                            tBody.appendChild(tr);
+                        });
+
+                        // Update count badge
+                        updateOrdersCountBadge();
+
+                        // Default filter to today's date ONLY on first load
+                        if (!hasInitializedDateFilter) {
+                            const today = new Date();
+                            const todayStr = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
+                            document.getElementById('ordersDateFilter').value = todayStr;
+                            hasInitializedDateFilter = true;
+                        }
+
+                        filterOrdersTable();
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to update dashboard data', err);
+            }
+        }
+
+        // ── Inline table filter ──
+        function filterOrdersTable() {
+            const query = document.getElementById('ordersFilterInput').value || '';
+            const dateQuery = document.getElementById('ordersDateFilter').value || '';
+
+            const q = query.trim().toLowerCase();
+            const rows = document.querySelectorAll('#ordersTableBody tr[data-search]');
+            let visible = 0;
+
+            // Toggle clear button
+            const clearBtn = document.getElementById('ordersSearchClear');
+            if (clearBtn) clearBtn.classList.toggle('visible', q.length > 0 || dateQuery.length > 0);
+
+            rows.forEach(row => {
+                const textMatch = !q || row.getAttribute('data-search').includes(q);
+                const dateMatch = !dateQuery || row.getAttribute('data-date') === dateQuery;
+
+                const match = textMatch && dateMatch;
+                row.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+
+            // Show/hide no-results placeholder
+            let noResultsRow = document.getElementById('noResultsRow');
+            if ((!q && !dateQuery) || visible > 0) {
+                if (noResultsRow) noResultsRow.remove();
+            } else {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResultsRow';
+                    noResultsRow.className = 'no-results-row';
+                    document.getElementById('ordersTableBody').appendChild(noResultsRow);
+                }
+
+                let message = '🔍 No orders match your filters';
+                if (!q && dateQuery) {
+                    message = '📅 THERE IS NO ORDER ON THIS DATE';
+                }
+
+                noResultsRow.innerHTML = `<td colspan="7" style="text-align:center; padding: 20px;">${message}</td>`;
+            }
+
+            updateOrdersCountBadge(visible, rows.length, q || dateQuery);
+        }
+
+        function updateOrdersCountBadge(visible, total, q) {
+            const badge = document.getElementById('ordersCountBadge');
+            if (!badge) return;
+            if (!q) {
+                const all = document.querySelectorAll('#ordersTableBody tr[data-search]').length;
+                badge.textContent = all > 0 ? all + ' order' + (all !== 1 ? 's' : '') : '';
+            } else {
+                badge.textContent = visible + ' of ' + total + ' order' + (total !== 1 ? 's' : '') + ' shown';
+            }
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const res = await fetch('/api/admin/orders/' + orderId + '/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderStatus: newStatus })
+                });
+                if (res.ok) {
+                    alert('Order status updated seamlessly!');
+                    fetchDashboard();
+                } else {
+                    alert('Error updating status');
+                }
+            } catch (e) {
+                alert('Network error');
+            }
+        }
+
+        async function assignDeliveryAgent(orderId) {
+            const agentName = prompt("Enter Delivery Agent Name:");
+            if (!agentName) return;
+            const agentPhone = prompt("Enter Delivery Agent Phone Number:");
+            if (!agentPhone) return;
+
+            try {
+                const res = await fetch('/api/admin/orders/' + orderId + '/assign', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deliveryAgentName: agentName, deliveryAgentPhone: agentPhone })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Delivery Agent Assigned! Tracking ID: ' + data.order.trackingId);
+                    fetchDashboard();
+                } else {
+                    alert(data.message || 'Error assigning agent');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Network Error');
+            }
+        }
+
+        // Fetch immediately, then poll every 5 seconds for real-time updates
+        fetchDashboard();
+        setInterval(fetchDashboard, 5000);
+    </script>
+</body>
+
+</html>

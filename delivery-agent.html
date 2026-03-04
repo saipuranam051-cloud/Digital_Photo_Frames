@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Agent Portal - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        .agent-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            font-family: var(--font-serif);
+            margin-bottom: 20px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .order-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid #eaeaea;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .camera-btn {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px dashed #cbd5e1;
+            padding: 15px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .camera-btn:hover {
+            background: #e2e8f0;
+        }
+
+        select.status-select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-center" style="margin: 0 auto;">
+            <a href="index.html" class="logo">DIVINE.</a> <span
+                style="font-weight: bold; margin-left:10px; color:#555;">Agent Portal</span>
+        </div>
+        <div class="nav-right" id="navLogout" style="display:none; margin-right: 20px;">
+            <button class="btn btn-outline" onclick="logoutAgent()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="agent-container">
+
+        <!-- Login Section -->
+        <div id="loginSection" class="login-box">
+            <h2>Welcome Agent</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;">Please enter your assigned mobile number to view
+                deliveries.</p>
+            <input type="text" id="phoneInput" placeholder="Enter Mobile Number (e.g. 9876543210)" />
+            <button class="btn btn-primary" onclick="loginAgent()">Login to Portal</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" style="display: none;">
+            <h2 style="font-family: var(--font-serif); margin-bottom: 20px;">Your Deliveries</h2>
+            <div id="ordersContainer">Loading...</div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentPhone = localStorage.getItem('agentPhone');
+
+        function checkAuth() {
+            if (currentPhone) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('navLogout').style.display = 'block';
+                loadAgentOrders();
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+                document.getElementById('navLogout').style.display = 'none';
+            }
+        }
+
+        function loginAgent() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if (!phone) return alert('Enter phone number to proceed');
+            localStorage.setItem('agentPhone', phone);
+            currentPhone = phone;
+            checkAuth();
+        }
+
+        function logoutAgent() {
+            localStorage.removeItem('agentPhone');
+            currentPhone = null;
+            checkAuth();
+        }
+
+        async function loadAgentOrders() {
+            if (!currentPhone) return;
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = '<p>Loading your deliveries...</p>';
+
+            try {
+                const res = await fetch('/api/agent/orders/' + encodeURIComponent(currentPhone));
+                const data = await res.json();
+
+                if (data.success) {
+                    if (data.data.length === 0) {
+                        container.innerHTML = '<p style="color:#666;text-align:center;padding:40px;">No deliveries assigned to you right now.</p>';
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    data.data.forEach(o => {
+                        const div = document.createElement('div');
+                        div.className = 'order-card';
+
+                        let isDelivered = o.orderStatus === 'Delivered';
+
+                        div.innerHTML = `
+                            <div class="order-header">
+                                <div>
+                                    <strong style="font-size:1.1rem;">#${o.orderId}</strong>
+                                    <div style="font-size:0.8rem;color:#666;">Payment: ${o.paymentMethod} (${o.paymentStatus})</div>
+                                </div>
+                                <span class="status-badge" style="background:#f3f4f6; color:#1f2937;">${o.orderStatus}</span>
+                            </div>
+                            
+                            <div style="margin-bottom:10px;">
+                                <strong>Customer:</strong> ${o.customerName} <br/>
+                                <strong>Phone:</strong> <a href="tel:${o.phone}">${o.phone}</a> <br/>
+                                <strong>Address:</strong> ${o.address || 'Not Provided'}
+                            </div>
+
+                            ${isDelivered ? `<div style="color:green;font-weight:bold;margin-top:10px;">✅ Delivered Successfully</div>`
+                                : `
+                            <div style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+                                <label style="font-size:0.85rem;font-weight:bold;display:block;margin-bottom:5px;">Update Status:</label>
+                                <select class="status-select" id="status-${o.orderId}">
+                                    <option value="Out for Delivery" ${o.orderStatus === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                                    <option value="Delivered" ${o.orderStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                    <option value="Delivery Failed" ${o.orderStatus === 'Delivery Failed' ? 'selected' : ''}>Delivery Failed</option>
+                                </select>
+
+                                <label class="camera-btn" style="display:block;">
+                                    📸 Capture Proof (Photo/Signature)
+                                    <input type="file" style="display:none;" id="proof-${o.orderId}" accept="image/*" capture="environment">
+                                </label>
+                                <div id="file-name-${o.orderId}" style="font-size:0.8rem;color:#888;text-align:center;margin-top:5px;"></div>
+                                
+                                <button class="btn btn-primary" style="margin-top:10px;" onclick="updateOrderStatus('${o.orderId}')">Save Update</button>
+                            </div>
+                            `}
+                        `;
+                        container.appendChild(div);
+
+                        // File input listener
+                        if (!isDelivered) {
+                            setTimeout(() => {
+                                const fi = document.getElementById(`proof-${o.orderId}`);
+                                fi.addEventListener('change', (e) => {
+                                    if (e.target.files.length) {
+                                        document.getElementById(`file-name-${o.orderId}`).innerText = 'File attached: ' + e.target.files[0].name;
+                                    }
+                                });
+                            }, 50);
+                        }
+                    });
+                }
+            } catch (e) {
+                container.innerHTML = '<p style="color:red;">Failed to connect to server.</p>';
+            }
+        }
+
+        async function updateOrderStatus(orderId) {
+            const status = document.getElementById(`status-${orderId}`).value;
+            const fileInput = document.getElementById(`proof-${orderId}`);
+
+            const formData = new FormData();
+            formData.append('orderStatus', status);
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('proof', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch('/api/agent/orders/' + orderId + '/status', {
+                    method: 'PUT',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Order updated to ' + status);
+                    loadAgentOrders();
+                } else {
+                    alert('Error updating order');
+                }
+            } catch (e) {
+                alert('Network Error');
+            }
+        }
+
+        // Auto Refresh Dashboard if open
+        setInterval(() => {
+            if (currentPhone && document.getElementById('dashboardSection').style.display === 'block') {
+                // Don't interrupt user if they selected a file
+                // Here we simply reload but in real app we'd be more careful
+                loadAgentOrders();
+            }
+        }, 15000);
+
+        checkAuth();
+    </script>
+</body>
+
+</html>

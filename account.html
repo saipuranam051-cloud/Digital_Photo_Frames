@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Divine Frames</title>
+    <meta name="description" content="Manage your Divine Frames account – orders, addresses, reviews and more.">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Layout ── */
+        .account-wrapper {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: calc(100vh - 60px);
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 36px 20px 60px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* ── Sidebar ── */
+        .account-sidebar {
+            background: #2b2b2b;
+            border-radius: 10px;
+            overflow: hidden;
+            position: sticky;
+            top: 80px;
+        }
+
+        .sidebar-user {
+            background: #1e1e1e;
+            padding: 20px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-user-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-user-email {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.75rem;
+            word-break: break-all;
+        }
+
+        .sidebar-nav {
+            padding: 10px 0;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 18px;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border-left: 3px solid transparent;
+            user-select: none;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(233, 69, 96, 0.12);
+            color: #fff;
+            border-left-color: var(--primary-color);
+        }
+
+        .sidebar-nav-item svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .sidebar-nav-item.active svg {
+            opacity: 1;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+            margin: 6px 0;
+        }
+
+        .sidebar-logout {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 18px;
+            color: #e94560;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(233, 69, 96, 0.08);
+        }
+
+        /* ── Main Panel ── */
+        .account-main {
+            min-height: 400px;
+        }
+
+        .account-panel {
+            display: none;
+            animation: fadeInUp 0.22s ease;
+        }
+
+        .account-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-heading h2 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        /* ── Overview cards ── */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .overview-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .overview-card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .overview-card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .overview-card-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .overview-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-top: 4px;
+        }
+
+        /* ── Profile info ── */
+        .profile-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-row:last-child {
+            border-bottom: none;
+        }
+
+        .profile-row-label {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .profile-row-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* ── Orders ── */
+        .order-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .order-card-header {
+            background: #f8f9fa;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .order-header-group {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .order-header-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-header-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .order-header-value {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-card-body {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .order-product-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .order-thumb {
+            width: 68px;
+            height: 68px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .order-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-processing {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .badge-delivered {
+            background: #eafbf0;
+            color: #1a7f37;
+        }
+
+        .badge-cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .badge-shipped {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        /* ── Addresses ── */
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .address-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .address-card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .address-card-body {
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .address-card-body.empty {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* Add address modal */
+        .add-address-form {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .add-address-form.open {
+            display: block;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-field label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        /* ── Reviews ── */
+        .review-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+        }
+
+        .review-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .review-stars {
+            color: #ff9f00;
+            font-size: 1rem;
+        }
+
+        .review-product-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .review-text {
+            font-size: 0.88rem;
+            color: #555;
+            line-height: 1.55;
+        }
+
+        .review-date {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        /* ── Newsletter ── */
+        .newsletter-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 28px;
+        }
+
+        .newsletter-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .newsletter-toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .toggle-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* iOS-style toggle */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #ccc;
+            border-radius: 24px;
+            transition: background 0.25s;
+        }
+
+        .toggle-slider:before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.25s;
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--primary-color);
+        }
+
+        .toggle-switch input:checked+.toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+
+        /* ── Empty States ── */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .empty-state p {
+            font-size: 0.88rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .account-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .account-sidebar {
+                position: static;
+            }
+
+            .address-grid,
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">← Back to Store</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right">
+            <a href="cart.html" class="nav-icon" title="Shopping Bag">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <div class="account-wrapper">
+
+        <!-- ── SIDEBAR ── -->
+        <aside class="account-sidebar">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
+                <div class="sidebar-user-name" id="sidebarName">Loading…</div>
+                <div class="sidebar-user-email" id="sidebarEmail"></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item active" data-panel="overview">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Account Overview
+                </div>
+                <div class="sidebar-nav-item" data-panel="orders">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 01-8 0" />
+                    </svg>
+                    My Orders
+                </div>
+                <div class="sidebar-nav-item" data-panel="addresses">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    Saved Addresses
+                </div>
+                <div class="sidebar-nav-item" data-panel="reviews">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    Product Reviews
+                </div>
+                <div class="sidebar-nav-item" data-panel="blogs">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+                    </svg>
+                    Saved Blogs
+                </div>
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-nav-item" data-panel="newsletter">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Newsletter
+                </div>
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-logout" id="logoutBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Logout
+                </div>
+            </nav>
+        </aside>
+
+        <!-- ── MAIN CONTENT ── -->
+        <main class="account-main">
+
+            <!-- ══ OVERVIEW ══ -->
+            <section class="account-panel active" id="panel-overview">
+                <div class="panel-heading">
+                    <h2>Account Overview</h2>
+                </div>
+                <div class="overview-grid">
+                    <div class="overview-card" onclick="switchPanel('orders')">
+                        <div class="overview-card-icon">📦</div>
+                        <div class="overview-card-label">Total Orders</div>
+                        <div class="overview-card-value" id="ovTotalOrders">—</div>
+                    </div>
+                    <div class="overview-card" onclick="switchPanel('orders')">
+                        <div class="overview-card-icon">🚚</div>
+                        <div class="overview-card-label">Active Orders</div>
+                        <div class="overview-card-value" id="ovActiveOrders">—</div>
+                    </div>
+                    <div class="overview-card" onclick="switchPanel('addresses')">
+                        <div class="overview-card-icon">📍</div>
+                        <div class="overview-card-label">Saved Addresses</div>
+                        <div class="overview-card-value" id="ovAddresses">—</div>
+                    </div>
+                    <div class="overview-card" onclick="switchPanel('reviews')">
+                        <div class="overview-card-icon">⭐</div>
+                        <div class="overview-card-label">My Reviews</div>
+                        <div class="overview-card-value" id="ovReviews">—</div>
+                    </div>
+                </div>
+
+                <div class="profile-card" style="margin-top:0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <h3 style="font-size:1rem; font-weight:600;">Personal Information</h3>
+
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-row-label">Full Name</span>
+                        <span class="profile-row-value" id="profileName">—</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-row-label">Email</span>
+                        <span class="profile-row-value" id="profileEmail">—</span>
+                    </div>
+
+                    <div class="profile-row">
+                        <span class="profile-row-label">Member Since</span>
+                        <span class="profile-row-value" id="profileSince">—</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-row-label">Account ID</span>
+                        <span class="profile-row-value" id="profileId"
+                            style="font-size:0.8rem; color:var(--text-muted);">—</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ MY ORDERS ══ -->
+            <section class="account-panel" id="panel-orders">
+                <div class="panel-heading">
+                    <h2>My Orders</h2>
+                    <span style="font-size:0.85rem; color:var(--text-muted);" id="ordersSubtitle"></span>
+                </div>
+                <div id="ordersContainer">
+                    <div style="text-align:center; padding:40px; color:#aaa;">Loading orders…</div>
+                </div>
+            </section>
+
+            <!-- ══ SAVED ADDRESSES ══ -->
+            <section class="account-panel" id="panel-addresses">
+                <div class="panel-heading">
+                    <h2>Saved Addresses</h2>
+                    <button class="btn btn-primary" style="padding:8px 18px; font-size:0.85rem;"
+                        onclick="toggleAddressForm()">
+                        + Add New Address
+                    </button>
+                </div>
+
+                <div class="address-grid">
+                    <div class="address-card">
+                        <div class="address-card-title">📦 Delivery Address</div>
+                        <div class="address-card-body" id="deliveryAddressBody">
+                            <span class="empty"
+                                style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">You have no
+                                default shipping address in your address book.</span>
+                        </div>
+                    </div>
+                    <div class="address-card">
+                        <div class="address-card-title">🧾 Billing Address</div>
+                        <div class="address-card-body" id="billingAddressBody">
+                            <span style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">You have no
+                                default billing address in your address book.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Address Form -->
+                <div class="add-address-form" id="addAddressForm">
+                    <h3 style="font-size:1rem; font-weight:600; margin-bottom:16px;">Add New Address</h3>
+                    <div class="form-grid-2">
+                        <div class="form-field">
+                            <label>Full Name</label>
+                            <input type="text" id="addrName" placeholder="e.g. Rahul Sharma">
+                        </div>
+                        <div class="form-field">
+                            <label>Phone Number</label>
+                            <input type="tel" id="addrPhone" placeholder="+91 XXXXX XXXXX">
+                        </div>
+                        <div class="form-field form-full">
+                            <label>Street / Flat / Area</label>
+                            <input type="text" id="addrStreet" placeholder="House No., Street, Area">
+                        </div>
+                        <div class="form-field">
+                            <label>City</label>
+                            <input type="text" id="addrCity" placeholder="City">
+                        </div>
+                        <div class="form-field">
+                            <label>State</label>
+                            <input type="text" id="addrState" placeholder="State">
+                        </div>
+                        <div class="form-field">
+                            <label>PIN Code</label>
+                            <input type="text" id="addrPin" placeholder="6-digit PIN">
+                        </div>
+                        <div class="form-field">
+                            <label>Address Type</label>
+                            <select id="addrType">
+                                <option value="delivery">Delivery (Shipping)</option>
+                                <option value="billing">Billing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px; display:flex; gap:10px;">
+                        <button class="btn btn-primary" onclick="saveAddress()" style="padding:10px 24px;">Save
+                            Address</button>
+                        <button class="btn btn-outline" onclick="toggleAddressForm()"
+                            style="padding:10px 20px;">Cancel</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PRODUCT REVIEWS ══ -->
+            <section class="account-panel" id="panel-reviews">
+                <div class="panel-heading">
+                    <h2>Product Reviews</h2>
+                </div>
+                <div id="reviewsContainer">
+                    <div class="empty-state">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                        <h3>No reviews yet</h3>
+                        <p>Reviews you leave on products will appear here.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ SAVED BLOGS ══ -->
+            <section class="account-panel" id="panel-blogs">
+                <div class="panel-heading">
+                    <h2>Saved Blogs</h2>
+                </div>
+                <div class="empty-state">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+                    </svg>
+                    <h3>No saved blogs</h3>
+                    <p>Bookmark articles from our blog and they'll appear here.</p>
+                </div>
+            </section>
+
+            <!-- ══ NEWSLETTER ══ -->
+            <section class="account-panel" id="panel-newsletter">
+                <div class="panel-heading">
+                    <h2>Newsletter Subscriptions</h2>
+                </div>
+                <div class="newsletter-card">
+                    <div class="newsletter-toggle-row">
+                        <div class="toggle-info">
+                            <h4>New Arrivals & Collections</h4>
+                            <p>Be the first to know about new divine frames and products</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="nl-arrivals" checked onchange="saveNewsletterPref()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="newsletter-toggle-row">
+                        <div class="toggle-info">
+                            <h4>Exclusive Offers & Discounts</h4>
+                            <p>Get personalised deals, coupon codes and flash sales</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="nl-offers" checked onchange="saveNewsletterPref()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="newsletter-toggle-row">
+                        <div class="toggle-info">
+                            <h4>Order & Shipping Updates</h4>
+                            <p>Receive emails about your active orders and delivery</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="nl-orders" checked onchange="saveNewsletterPref()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="newsletter-toggle-row">
+                        <div class="toggle-info">
+                            <h4>Blog & Spiritual Articles</h4>
+                            <p>Weekly articles on deities, spiritual rituals and festivals</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="nl-blog" onchange="saveNewsletterPref()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:16px;">
+                        Your preferences are saved locally. You can unsubscribe from any email using the link in the
+                        email.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // ── Auth Guard ──
+        const userSession = localStorage.getItem('user');
+        if (!userSession) { window.location.href = 'login.html'; }
+
+        let user = {};
+        try { user = JSON.parse(userSession); } catch (e) { window.location.href = 'login.html'; }
+
+        // ── Populate sidebar & overview ──
+        function initUser() {
+            const initials = (user.fname || '?')[0].toUpperCase();
+            document.getElementById('sidebarAvatar').textContent = initials;
+            document.getElementById('sidebarName').textContent = user.fname || 'User';
+            document.getElementById('sidebarEmail').textContent = user.email || '';
+            document.getElementById('profileName').textContent = (user.fname || '') + (user.lname ? ' ' + user.lname : '') || '—';
+            document.getElementById('profileEmail').textContent = user.email || '—';
+
+            document.getElementById('profileId').textContent = user.id || '—';
+            document.getElementById('profileSince').textContent = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long' });
+        }
+
+        // ── Panel switching ──
+        function switchPanel(name) {
+            document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            document.querySelector('[data-panel="' + name + '"]').classList.add('active');
+
+            if (name === 'orders') loadOrders();
+            if (name === 'reviews') loadReviews();
+            if (name === 'newsletter') loadNewsletterPrefs();
+            if (name === 'addresses') loadAddresses();
+        }
+
+
+
+        document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+            item.addEventListener('click', () => switchPanel(item.dataset.panel));
+        });
+
+        // ── Logout ──
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ── Load Orders ──
+        async function loadOrders() {
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:#aaa;">Loading orders…</div>';
+            try {
+                const res = await fetch('/api/orders/user/' + encodeURIComponent(user.email));
+                const data = await res.json();
+                if (!data.success || data.orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                            <h3>No orders yet</h3>
+                            <p>Your placed orders will appear here.</p>
+                            <a href="index.html" class="btn btn-primary" style="display:inline-block;width:auto;margin-top:16px;">Start Shopping</a>
+                        </div>`;
+                    document.getElementById('ovTotalOrders').textContent = '0';
+                    document.getElementById('ovActiveOrders').textContent = '0';
+                    return;
+                }
+
+                const orders = data.orders;
+                document.getElementById('ordersSubtitle').textContent = orders.length + ' order' + (orders.length !== 1 ? 's' : '');
+                document.getElementById('ovTotalOrders').textContent = orders.length;
+                const active = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.orderStatus)).length;
+                document.getElementById('ovActiveOrders').textContent = active;
+
+                container.innerHTML = '';
+                orders.forEach(o => {
+                    const d = new Date(o.createdAt);
+                    const dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const itemsStr = o.items && o.items.length ? o.items.map(i => i.title).join(', ') : 'Divine Frame';
+                    const qty = o.items ? o.items.reduce((a, c) => a + (c.quantity || 1), 0) : 1;
+
+                    let badgeClass = 'badge-processing';
+                    if (o.orderStatus === 'Delivered') badgeClass = 'badge-delivered';
+                    else if (o.orderStatus === 'Cancelled') badgeClass = 'badge-cancelled';
+                    else if (o.orderStatus === 'Shipped' || o.orderStatus === 'Out for Delivery') badgeClass = 'badge-shipped';
+
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-card-header">
+                            <div class="order-header-group">
+                                <div class="order-header-item">
+                                    <span class="order-header-label">Order Placed</span>
+                                    <span class="order-header-value">${dateStr} &nbsp;⏰ ${timeStr}</span>
+                                </div>
+                                <div class="order-header-item">
+                                    <span class="order-header-label">Amount</span>
+                                    <span class="order-header-value">₹${o.amount.toLocaleString('en-IN')}</span>
+                                </div>
+                                <div class="order-header-item">
+                                    <span class="order-header-label">Ship To</span>
+                                    <span class="order-header-value">${o.customerName}</span>
+                                </div>
+                            </div>
+                            <div class="order-header-item" style="text-align:right;">
+                                <span class="order-header-label">Order #</span>
+                                <span class="order-header-value" style="color:var(--primary-color);">${o.orderId}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-body">
+                            <div class="order-product-info">
+                                <div class="order-thumb">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                                <div>
+                                    <div style="font-weight:600; font-size:0.92rem; margin-bottom:3px;">${itemsStr}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-muted);">Qty: ${qty} | via ${o.paymentMethod || 'Online'}</div>
+                                </div>
+                            </div>
+                            <div style="text-align:center;">
+                                <span class="order-status-badge ${badgeClass}">
+                                    <span style="width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;"></span>
+                                    ${o.orderStatus}
+                                </span>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-primary" style="padding:8px 14px;font-size:0.82rem;" onclick="window.location.href='track-order.html?id=${o.orderId}'">Track</button>
+                            </div>
+                        </div>`;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state"><p>Could not connect to server.</p></div>`;
+            }
+        }
+
+        // ── Load Reviews ──
+        async function loadReviews() {
+            const container = document.getElementById('reviewsContainer');
+            // Reviews are stored by productId so we can't easily filter by user without a user field.
+            // Show a friendly message with a link to leave reviews.
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <h3>No reviews yet</h3>
+                    <p>Buy a product and leave a review — it will appear here.</p>
+                    <a href="index.html" class="btn btn-outline" style="display:inline-block;width:auto;margin-top:16px;">Browse Products</a>
+                </div>`;
+            document.getElementById('ovReviews').textContent = '0';
+        }
+
+        // ── Addresses (localStorage-based) ──
+        const ADDR_KEY = 'divine_addresses_' + (user.id || user.email);
+
+        function loadAddresses() {
+            const saved = JSON.parse(localStorage.getItem(ADDR_KEY) || '{}');
+            const deliveryEl = document.getElementById('deliveryAddressBody');
+            const billingEl = document.getElementById('billingAddressBody');
+
+            if (saved.delivery) {
+                deliveryEl.innerHTML = formatAddress(saved.delivery);
+                deliveryEl.innerHTML += `<button onclick="removeAddress('delivery')" style="margin-top:10px;font-size:0.78rem;color:var(--primary-color);border:none;background:none;cursor:pointer;text-decoration:underline;">Remove</button>`;
+            } else {
+                deliveryEl.innerHTML = `<span style="color:var(--text-muted);font-size:0.85rem;font-style:italic;">You have no default shipping address in your address book.</span>`;
+            }
+
+            if (saved.billing) {
+                billingEl.innerHTML = formatAddress(saved.billing);
+                billingEl.innerHTML += `<button onclick="removeAddress('billing')" style="margin-top:10px;font-size:0.78rem;color:var(--primary-color);border:none;background:none;cursor:pointer;text-decoration:underline;">Remove</button>`;
+            } else {
+                billingEl.innerHTML = `<span style="color:var(--text-muted);font-size:0.85rem;font-style:italic;">You have no default billing address in your address book.</span>`;
+            }
+
+            const count = (saved.delivery ? 1 : 0) + (saved.billing ? 1 : 0);
+            document.getElementById('ovAddresses').textContent = count;
+        }
+
+        function formatAddress(a) {
+            return `<strong>${a.name}</strong><br>${a.phone}<br>${a.street},<br>${a.city}, ${a.state} – ${a.pin}`;
+        }
+
+        function toggleAddressForm() {
+            const form = document.getElementById('addAddressForm');
+            form.classList.toggle('open');
+        }
+
+        function saveAddress() {
+            const name = document.getElementById('addrName').value.trim();
+            const phone = document.getElementById('addrPhone').value.trim();
+            const street = document.getElementById('addrStreet').value.trim();
+            const city = document.getElementById('addrCity').value.trim();
+            const state = document.getElementById('addrState').value.trim();
+            const pin = document.getElementById('addrPin').value.trim();
+            const type = document.getElementById('addrType').value;
+
+            if (!name || !street || !city || !pin) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const saved = JSON.parse(localStorage.getItem(ADDR_KEY) || '{}');
+            saved[type] = { name, phone, street, city, state, pin };
+            localStorage.setItem(ADDR_KEY, JSON.stringify(saved));
+
+            document.getElementById('addAddressForm').classList.remove('open');
+            // Clear form
+            ['addrName', 'addrPhone', 'addrStreet', 'addrCity', 'addrState', 'addrPin'].forEach(id => document.getElementById(id).value = '');
+            loadAddresses();
+
+            const toast = document.createElement('div');
+            toast.innerText = '✓ Address saved!';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a7f37;color:#fff;padding:12px 24px;border-radius:50px;font-weight:600;font-size:0.9rem;z-index:99999;';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2200);
+        }
+
+        function removeAddress(type) {
+            if (!confirm('Remove this address?')) return;
+            const saved = JSON.parse(localStorage.getItem(ADDR_KEY) || '{}');
+            delete saved[type];
+            localStorage.setItem(ADDR_KEY, JSON.stringify(saved));
+            loadAddresses();
+        }
+
+        // ── Newsletter prefs ──
+        const NL_KEY = 'divine_nl_' + (user.id || user.email);
+
+        function loadNewsletterPrefs() {
+            const prefs = JSON.parse(localStorage.getItem(NL_KEY) || '{"arrivals":true,"offers":true,"orders":true,"blog":false}');
+            document.getElementById('nl-arrivals').checked = !!prefs.arrivals;
+            document.getElementById('nl-offers').checked = !!prefs.offers;
+            document.getElementById('nl-orders').checked = !!prefs.orders;
+            document.getElementById('nl-blog').checked = !!prefs.blog;
+        }
+
+        function saveNewsletterPref() {
+            const prefs = {
+                arrivals: document.getElementById('nl-arrivals').checked,
+                offers: document.getElementById('nl-offers').checked,
+                orders: document.getElementById('nl-orders').checked,
+                blog: document.getElementById('nl-blog').checked,
+            };
+            localStorage.setItem(NL_KEY, JSON.stringify(prefs));
+        }
+
+        // ── Init ──
+        initUser();
+        loadOrders(); // prefetch for overview counts
+        loadAddresses();
+        loadNewsletterPrefs();
+    </script>
+</body>
+
+</html>

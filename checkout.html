@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Divine Frames</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        .checkout-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--sp-xl) var(--sp-lg);
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--sp-xl);
+        }
+
+        .form-section {
+            margin-bottom: var(--sp-xl);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--sp-lg);
+        }
+
+        .form-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: var(--sp-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--sp-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--sp-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .form-row {
+            display: flex;
+            gap: var(--sp-md);
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .order-summary {
+            background-color: var(--secondary-color);
+            padding: var(--sp-lg);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: var(--sp-sm);
+            padding-bottom: var(--sp-sm);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: var(--sp-md);
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 16px;
+            margin-top: var(--sp-lg);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="cart.html" class="nav-link">← Back to Bag</a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" class="logo">DIVINE.</a>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="checkout-container">
+        <!-- Left Column: Forms -->
+        <div class="checkout-forms">
+            <!-- Shipping Info -->
+            <div class="form-section">
+                <h2 class="form-title">Shipping Address</h2>
+                <form id="checkoutForm">
+                    <div class="form-row">
+                        <div class="form-col form-group">
+                            <label>First Name</label>
+                            <input type="text" id="fname" required>
+                        </div>
+                        <div class="form-col form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="lname" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="address" required placeholder="Street address or P.O. Box">
+                    </div>
+                    <div class="form-group">
+                        <label>Apartment, suite, etc. (optional)</label>
+                        <input type="text" id="apartment">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col form-group">
+                            <label>City</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-col form-group">
+                            <label>State</label>
+                            <select required>
+                                <option value="">Select State</option>
+                                <option value="MH">Maharashtra</option>
+                                <option value="DL">Delhi</option>
+                                <option value="KA">Karnataka</option>
+                            </select>
+                        </div>
+                        <div class="form-col form-group">
+                            <label>PIN Code</label>
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="form-section" style="border-bottom: none; margin-top: 20px;">
+                        <h2 class="form-title">Payment</h2>
+                        <div class="form-group">
+                            <label>Secure Payment Gateway</label>
+                            <select id="paymentMethod" required style="width: 100%; padding: 12px;">
+                                <option value="UPI">UPI (GPay, PhonePe, Paytm)</option>
+                                <option value="Card">Credit / Debit Card</option>
+                                <option value="NetBanking">Net Banking</option>
+                            </select>
+                        </div>
+                        <div style="font-size:0.85rem; color: #1a7f37; margin-bottom: 20px;">✓ Secured by 256-bit
+                            encryption</div>
+
+                        <button type="submit" class="btn btn-primary btn-checkout">Proceed to Secure Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Summary -->
+        <div class="order-summary">
+            <h3 class="form-title" style="font-size: 1.2rem;">Order Review</h3>
+            <div class="summary-item" style="border-bottom:none">
+                <span style="font-weight:500;">Ganesha Premium Wood Frame</span>
+                <span>₹2,499</span>
+            </div>
+            <div class="summary-item" style="color:var(--text-muted); font-size:0.8rem;">
+                <span>Size: 12x16", Qty: 1</span>
+                <span></span>
+            </div>
+
+            <div class="summary-item mt-4" style="margin-top: 20px;">
+                <span>Subtotal</span>
+                <span>₹2,499</span>
+            </div>
+            <div class="summary-item">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span>₹2,499</span>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Payment Overlay Modal -->
+    <div id="paymentModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#fff; padding:30px; border-radius:8px; text-align:center; max-width:400px; width:100%;">
+            <svg id="paySpinner" viewBox="0 0 50 50"
+                style="width:50px; height:50px; animation:spin 1s linear infinite;">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="var(--primary-color)" stroke-width="5"
+                    stroke-dasharray="31.4 31.4"></circle>
+            </svg>
+            <h3 id="payTitle" style="margin-top:20px; font-family:var(--font-serif);">Processing Secure Payment</h3>
+            <p id="paySubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-top:10px;">Please do not close
+                this window...</p>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const customerName = document.getElementById('fname').value + ' ' + document.getElementById('lname').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            const modal = document.getElementById('paymentModal');
+            const pTitle = document.getElementById('payTitle');
+            const pSub = document.getElementById('paySubtitle');
+
+            // Show Processing Modal
+            modal.style.display = 'flex';
+
+            // Simulate Payment Gateway Response Time
+            setTimeout(async () => {
+                pTitle.innerText = "Payment Successful!";
+                pTitle.style.color = "#1a7f37";
+                pSub.innerText = "Redirecting to order confirmation...";
+                document.getElementById('paySpinner').innerHTML = '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#1a7f37"/>'; // Simple success icon logic replacement
+                document.getElementById('paySpinner').style.animation = 'none';
+
+                // Send to Backend
+                try {
+                    let userEmail = 'guest@example.com';
+                    const storedUser = localStorage.getItem('user');
+                    if (storedUser) {
+                        try {
+                            const pUser = JSON.parse(storedUser);
+                            if (pUser.email) userEmail = pUser.email;
+                        } catch (e) { }
+                    }
+
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            customerName,
+                            phone,
+                            address,
+                            email: userEmail,
+                            amount: 2499,
+                            paymentMethod,
+                            items: [{ title: 'Ganesha Premium Wood Frame', quantity: 1, price: '2499' }]
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        try {
+                            // Automatically copy the order ID to clipboard for the customer
+                            await navigator.clipboard.writeText(result.orderId);
+                        } catch (e) { }
+
+                        setTimeout(() => {
+                            window.location.href = `order-confirmation.html?id=${result.orderId}&phone=${phone}`;
+                        }, 1000);
+                    } else {
+                        throw new Error('Order creation failed');
+                    }
+                } catch (err) {
+                    modal.style.display = 'none';
+                    alert("Payment Failed. Order was not processed. Please try again.");
+                }
+            }, 2500);
+        });
+    </script>
+</body>
+
+</html>
